@@ -1,1 +1,10 @@
+http:
+  port: "8081"
+  host: "0.0.0.0" 
 
+db:
+  username: "system"
+  password: "Mule@786"
+  port: "1521" 
+  host: "localhost"  
+  service: "XE" 
