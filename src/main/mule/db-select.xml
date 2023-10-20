@@ -6,12 +6,7 @@
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
-	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="6d1c3db8-0f73-41d6-bbd8-aee078422a11" >
-		<http:listener-connection host="0.0.0.0" port="8081" />
-	</http:listener-config>
-	<db:config name="Database_Config" doc:name="Database Config" doc:id="dbfa07ca-40df-4a69-ac26-37e80a54fe7e" >
-		<db:oracle-connection host="localhost" user="system" password="Mule@786" />
-	</db:config>
+
 	<flow name="db-selectFlow" doc:id="f6d84cda-094b-4887-8c3b-7a8091327d47" >
 		<http:listener doc:name="Listener" doc:id="4206c868-2ce7-4154-bc96-c95f272c9e26" config-ref="HTTP_Listener_config" path="/dbselect"/>
 		<logger level="INFO" doc:name="Start Logger" doc:id="1daf7cd2-ef70-4cca-9f69-329420b68ab0" message="Before calling the DB"/>
