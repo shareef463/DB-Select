@@ -18,8 +18,11 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 				<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
 ---
-typeOf(payload)]]></ee:set-payload>
+payload]]></ee:set-payload>
 			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="typeof" ><![CDATA[typeOf(payload)]]></ee:set-variable>
+			</ee:variables>
 		</ee:transform>
 	<logger level="INFO" doc:name="End Logger" doc:id="eddc18a6-1c4d-412a-8cc0-c8bb63781829" message="after calling the DB #[payload]"/>	
 	</flow>
