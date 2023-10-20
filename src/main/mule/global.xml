@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd 
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="9adba0dd-04b1-49c2-805b-830e83247e71" >
+		<http:listener-connection host="${http.host}" port="${http.port}" />
+	</http:listener-config>
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="48a06c0d-7468-4581-9952-e9561080f491" >
+		<db:oracle-connection host="${db.host}" user="${db.username}" password="${db.password}" port="${db.port}"/>
+	</db:config>
+	<configuration-properties doc:name="Configuration properties" doc:id="dedbd33d-f9bc-4d64-b373-365d0858449e" file="${env}.yaml" />
+	<global-property doc:name="Global Property" doc:id="9b2db970-f562-4c77-8381-465deb66ab49" name="env" value="local" />
+	
+</mule>
