@@ -13,6 +13,9 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 		<db:select doc:name="Select" doc:id="71283b0a-c429-4c99-a041-76cb600c303c" config-ref="Database_Config">
 			<db:sql ><![CDATA[select * from CVD_CASE_MASTER]]></db:sql>
 		</db:select>
+		<db:select doc:name="Select" doc:id="1703a332-9467-4ad0-a07c-ce365e2dd08c" config-ref="Database_Config">
+			<db:sql ><![CDATA[select max(case_id) as case_id from CVD_CASE_MASTER where national_id ='209-49-6193']]></db:sql>
+		</db:select>
 		<ee:transform doc:name="Transform Message" doc:id="7582b044-36e1-4ee9-999a-3d21145816c3" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
@@ -22,8 +25,13 @@ payload]]></ee:set-payload>
 			</ee:message>
 			<ee:variables >
 				<ee:set-variable variableName="typeof" ><![CDATA[typeOf(payload)]]></ee:set-variable>
+				<ee:set-variable variableName="payload" ><![CDATA[%dw 2.0
+output application/json
+---
+payload.CASE_ID]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
-	<logger level="INFO" doc:name="End Logger" doc:id="eddc18a6-1c4d-412a-8cc0-c8bb63781829" message="after calling the DB #[payload]"/>	
+	<logger level="INFO" doc:name="Logger" doc:id="f2c0b1e7-5b61-4ce9-a91c-843736a1d807" message="before end logger #[payload]"/>
+		<logger level="INFO" doc:name="End Logger" doc:id="eddc18a6-1c4d-412a-8cc0-c8bb63781829" message="after calling the DB #[message]"/>	
 	</flow>
 </mule>
