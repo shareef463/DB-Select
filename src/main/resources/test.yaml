@@ -8,3 +8,8 @@ db:
   port: "1521" 
   host: "localhost"  
   service: "XE" 
+
+
+Anypoint:
+  username: "shareef0434"
+  password: "Mule@786" 
