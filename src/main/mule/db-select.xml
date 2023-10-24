@@ -1,15 +1,141 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
-	xmlns:http="http://www.mulesoft.org/schema/mule/http"
-	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+<mule xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
-http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd">
 
-	<flow name="db-selectFlow" doc:id="f6d84cda-094b-4887-8c3b-7a8091327d47" >
+	<flow name="db-select-transactio-case" doc:id="f6d84cda-094b-4887-8c3b-7a8091327d47">
 		<http:listener doc:name="Listener" doc:id="4206c868-2ce7-4154-bc96-c95f272c9e26" config-ref="HTTP_Listener_config" path="/dbselect"/>
 		<logger level="INFO" doc:name="Start Logger" doc:id="1daf7cd2-ef70-4cca-9f69-329420b68ab0" message="Before calling the DB"/>
+				<ee:transform doc:name="Transform Message" doc:id="ed2232de-0e11-4ee0-92db-1261ad68516f" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="register" ><![CDATA[%dw 2.0
+output application/java
+---
+{
+	national_id: payload.nationalID,
+	street_address: payload.address.streetAddress,
+	country: payload.address.country,
+	city: payload.address.city,
+	date_of_birth: payload.dateOfBirth,
+	case_type: payload.caseType,
+	last_name: payload.lastName,
+	source: payload.source,
+	national_id_type: payload.nationalIDType,
+	update_date: now() as String {
+		format: "yyyy-MM-dd"
+	},
+	create_by: "UHIS",
+	phone: payload.phone,
+	state: payload.address.state,
+	postal: payload.address.postal,
+	create_date: now() as String {
+		format: "yyyy-MM-dd"
+	},
+	update_by: "UHIS",
+	first_name: payload.firstName,
+	email: payload.email
+}]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<try doc:name="Try" doc:id="1f0cd928-545b-4c86-b6b3-ae9a026d9093" transactionalAction="ALWAYS_BEGIN">
+			<db:insert doc:name="Insert" doc:id="9fa7a558-9597-40af-886e-a8296fe87acb" config-ref="Database_Config" transactionalAction="ALWAYS_JOIN">
+			<db:sql><![CDATA[INSERT INTO cvd_case_master 
+                (source,
+                 case_type, 
+                 first_name, 
+                 last_name, 
+                 phone, 
+                 email, 
+                 date_of_birth, 
+                 national_id, 
+                 national_id_type, 
+                 street_address, 
+                 city, 
+                 state, 
+                 postal, 
+                 country, 
+                 create_date, 
+                 update_date, 
+                 create_by, 
+                 update_by) 
+    VALUES     (:source, 
+                :case_type, 
+                :first_name, 
+                :last_name, 
+                :phone, 
+                :email, 
+                To_date(:date_of_birth, 'YYYY-MM-DD'), 
+                :national_id, 
+                :national_id_type, 
+                :street_address, 
+                :city, 
+                :state, 
+                :postal, 
+                :country, 
+                To_date(:create_date, 'YYYY-MM-DD'), 
+                To_date(:update_date, 'YYYY-MM-DD'), 
+                :create_by, 
+                :update_by)]]></db:sql>
+			<db:input-parameters><![CDATA[#[vars.register]]]></db:input-parameters>
+		</db:insert>
+			<db:insert doc:name="Copy_of_Insert" doc:id="774c7816-d3f0-40e7-96ab-2eb5e2fd646c" config-ref="Database_Config" transactionalAction="ALWAYS_JOIN">
+			<db:sql><![CDATA[INSERT INTO cvd_case_master 
+                (source,
+                 case_type, 
+                 first_name, 
+                 last_name, 
+                 phone, 
+                 email, 
+                 date_of_birth, 
+                 national_id, 
+                 national_id_type, 
+                 street_address, 
+                 city, 
+                 state, 
+                 postal, 
+                 country, 
+                 create_date, 
+                 update_date, 
+                 create_by, 
+                 update_by) 
+    VALUES     (:source, 
+                :case_type, 
+                :first_name, 
+                :last_name, 
+                :phone, 
+                :email, 
+                To_date(:date_of_birth, 'YYYY-MM-DD'), 
+                :national_id, 
+                :national_id_type, 
+                :street_address, 
+                :city, 
+                :state, 
+                :postal, 
+                :country, 
+                To_date(:create_date, 'YYYY-MM-DD'), 
+                To_date(:update_date, 'YYYY-MM-DD'), 
+                :create_by, 
+                :update_by)]]></db:sql>
+			<db:input-parameters><![CDATA[#[vars.register]]]></db:input-parameters>
+		</db:insert>
+			<ee:transform doc:name="Transform Message" doc:id="ecbb2efb-8e01-48af-9e8b-1d72366b5e13" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"Number": 1/1
+}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+		</try>
 		<db:select doc:name="Select" doc:id="71283b0a-c429-4c99-a041-76cb600c303c" config-ref="Database_Config">
 			<db:sql ><![CDATA[select * from CVD_CASE_MASTER]]></db:sql>
 		</db:select>
