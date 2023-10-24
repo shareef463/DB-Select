@@ -7,7 +7,7 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
 
-	<flow name="db-selectFlow" doc:id="f6d84cda-094b-4887-8c3b-7a8091327d47" >
+	<flow name="db-selectFlow" doc:id="f6d84cda-094b-4887-8c3b-7a8091327d47">
 		<http:listener doc:name="Listener" doc:id="4206c868-2ce7-4154-bc96-c95f272c9e26" config-ref="HTTP_Listener_config" path="/dbselect"/>
 		<logger level="INFO" doc:name="Start Logger" doc:id="1daf7cd2-ef70-4cca-9f69-329420b68ab0" message="Before calling the DB"/>
 		<db:select doc:name="Select" doc:id="71283b0a-c429-4c99-a041-76cb600c303c" config-ref="Database_Config">
