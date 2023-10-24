@@ -1,21 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+<mule
+	xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
 	xmlns:db="http://www.mulesoft.org/schema/mule/db"
-	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
 http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd">
 
-	<flow name="db-select-transactio-case" doc:id="f6d84cda-094b-4887-8c3b-7a8091327d47">
-		<http:listener doc:name="Listener" doc:id="4206c868-2ce7-4154-bc96-c95f272c9e26" config-ref="HTTP_Listener_config" path="/dbselect"/>
-		<logger level="INFO" doc:name="Start Logger" doc:id="1daf7cd2-ef70-4cca-9f69-329420b68ab0" message="Before calling the DB"/>
-				<ee:transform doc:name="Transform Message" doc:id="ed2232de-0e11-4ee0-92db-1261ad68516f" >
-			<ee:message >
+	<flow name="db-select-transactio-case"
+		doc:id="f6d84cda-094b-4887-8c3b-7a8091327d47">
+		<http:listener doc:name="Listener"
+			doc:id="4206c868-2ce7-4154-bc96-c95f272c9e26"
+			config-ref="HTTP_Listener_config" path="/dbselect" />
+		<logger level="INFO" doc:name="Start Logger"
+			doc:id="1daf7cd2-ef70-4cca-9f69-329420b68ab0"
+			message="Before calling the DB" />
+		<ee:transform doc:name="Transform Message"
+			doc:id="ed2232de-0e11-4ee0-92db-1261ad68516f">
+			<ee:message>
 			</ee:message>
-			<ee:variables >
-				<ee:set-variable variableName="register" ><![CDATA[%dw 2.0
+			<ee:variables>
+				<ee:set-variable variableName="register"><![CDATA[%dw 2.0
 output application/java
 ---
 {
@@ -44,9 +56,12 @@ output application/java
 }]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
-		<try doc:name="Try" doc:id="1f0cd928-545b-4c86-b6b3-ae9a026d9093" transactionalAction="ALWAYS_BEGIN">
-			<db:insert doc:name="Insert" doc:id="9fa7a558-9597-40af-886e-a8296fe87acb" config-ref="Database_Config" transactionalAction="ALWAYS_JOIN">
-			<db:sql><![CDATA[INSERT INTO cvd_case_master 
+		<try doc:name="Try" doc:id="1f0cd928-545b-4c86-b6b3-ae9a026d9093"
+			transactionalAction="ALWAYS_BEGIN">
+			<db:insert doc:name="Insert"
+				doc:id="9fa7a558-9597-40af-886e-a8296fe87acb"
+				config-ref="Database_Config" transactionalAction="ALWAYS_JOIN">
+				<db:sql><![CDATA[INSERT INTO cvd_case_master 
                 (source,
                  case_type, 
                  first_name, 
@@ -83,10 +98,12 @@ output application/java
                 To_date(:update_date, 'YYYY-MM-DD'), 
                 :create_by, 
                 :update_by)]]></db:sql>
-			<db:input-parameters><![CDATA[#[vars.register]]]></db:input-parameters>
-		</db:insert>
-			<db:insert doc:name="Copy_of_Insert" doc:id="774c7816-d3f0-40e7-96ab-2eb5e2fd646c" config-ref="Database_Config" transactionalAction="ALWAYS_JOIN">
-			<db:sql><![CDATA[INSERT INTO cvd_case_master 
+				<db:input-parameters><![CDATA[#[vars.register]]]></db:input-parameters>
+			</db:insert>
+			<db:insert doc:name="Copy_of_Insert"
+				doc:id="774c7816-d3f0-40e7-96ab-2eb5e2fd646c"
+				config-ref="Database_Config" transactionalAction="ALWAYS_JOIN">
+				<db:sql><![CDATA[INSERT INTO cvd_case_master 
                 (source,
                  case_type, 
                  first_name, 
@@ -123,41 +140,85 @@ output application/java
                 To_date(:update_date, 'YYYY-MM-DD'), 
                 :create_by, 
                 :update_by)]]></db:sql>
-			<db:input-parameters><![CDATA[#[vars.register]]]></db:input-parameters>
-		</db:insert>
-			<ee:transform doc:name="Transform Message" doc:id="ecbb2efb-8e01-48af-9e8b-1d72366b5e13" >
-				<ee:message >
-					<ee:set-payload ><![CDATA[%dw 2.0
+				<db:input-parameters><![CDATA[#[vars.register]]]></db:input-parameters>
+			</db:insert>
+			<ee:transform doc:name="Transform Message"
+				doc:id="ecbb2efb-8e01-48af-9e8b-1d72366b5e13">
+				<ee:message>
+					<ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 {
-	"Number": 1/1
+	"Number": 1/0
 }]]></ee:set-payload>
 				</ee:message>
 			</ee:transform>
+			<error-handler>
+				<on-error-propagate enableNotifications="true"
+					logException="true" doc:name="On Error Propagate"
+					doc:id="2a099027-ab24-4243-82f8-1e6b236c6183" type="ANY">
+					<ee:transform doc:name="Transform Message"
+						doc:id="a9819440-0e05-4c0e-bff6-e13fd41e7e7c">
+						<ee:message>
+							<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  message: "Error from the try scope",
+  error: error.errorMessage,
+  errortype: error.errorType,
+  errordiscreption: error.detailedDescription,
+}
+]]></ee:set-payload>
+						</ee:message>
+					</ee:transform>
+					<logger level="INFO" doc:name="Logger"
+						doc:id="b0dc4218-72ea-419c-b002-1789017e102f" message="#[payload]" />
+					<set-payload value="#[payload]" doc:name="Set Payload"
+						doc:id="025478cf-282b-497b-8547-e4bd3d6037a7" />
+				</on-error-propagate>
+			</error-handler>
 		</try>
-		<db:select doc:name="Select" doc:id="71283b0a-c429-4c99-a041-76cb600c303c" config-ref="Database_Config">
-			<db:sql ><![CDATA[select * from CVD_CASE_MASTER]]></db:sql>
+		<db:select doc:name="Select"
+			doc:id="71283b0a-c429-4c99-a041-76cb600c303c"
+			config-ref="Database_Config">
+			<db:sql><![CDATA[select * from CVD_CASE_MASTER]]></db:sql>
 		</db:select>
-		<db:select doc:name="Select" doc:id="1703a332-9467-4ad0-a07c-ce365e2dd08c" config-ref="Database_Config">
-			<db:sql ><![CDATA[select max(case_id) as case_id from CVD_CASE_MASTER where national_id ='209-49-6193']]></db:sql>
+		<db:select doc:name="Select"
+			doc:id="1703a332-9467-4ad0-a07c-ce365e2dd08c"
+			config-ref="Database_Config">
+			<db:sql><![CDATA[select max(case_id) as case_id from CVD_CASE_MASTER where national_id ='209-49-6193']]></db:sql>
 		</db:select>
-		<ee:transform doc:name="Transform Message" doc:id="7582b044-36e1-4ee9-999a-3d21145816c3" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
+		<ee:transform doc:name="Transform Message"
+			doc:id="7582b044-36e1-4ee9-999a-3d21145816c3">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 payload]]></ee:set-payload>
 			</ee:message>
-			<ee:variables >
-				<ee:set-variable variableName="typeof" ><![CDATA[typeOf(payload)]]></ee:set-variable>
-				<ee:set-variable variableName="payload" ><![CDATA[%dw 2.0
+			<ee:variables>
+				<ee:set-variable variableName="typeof"><![CDATA[typeOf(payload)]]></ee:set-variable>
+				<ee:set-variable variableName="payload"><![CDATA[%dw 2.0
 output application/json
 ---
 payload.CASE_ID]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
-	<logger level="INFO" doc:name="Logger" doc:id="f2c0b1e7-5b61-4ce9-a91c-843736a1d807" message="before end logger #[payload]"/>
-		<logger level="INFO" doc:name="End Logger" doc:id="eddc18a6-1c4d-412a-8cc0-c8bb63781829" message="after calling the DB #[message]"/>	
+		<logger level="INFO" doc:name="Logger"
+			doc:id="f2c0b1e7-5b61-4ce9-a91c-843736a1d807"
+			message="before end logger #[payload]" />
+		<logger level="INFO" doc:name="End Logger"
+			doc:id="eddc18a6-1c4d-412a-8cc0-c8bb63781829"
+			message="after calling the DB #[message]" />
+		<!-- <error-handler > <on-error-continue enableNotifications="true" logException="true" 
+			doc:name="On Error Continue" doc:id="35db3509-0182-4a21-993a-9ad8a346b7f3" 
+			type="ANY"> <ee:transform doc:name="Transform Message" doc:id="cb7218c6-ce87-439b-b43a-692ab375d09f" 
+			> <ee:message > <ee:set-payload ><![CDATA[%dw 2.0 output application/json 
+			-&#45;&#45; { message: "Error occurred in the main flow ", error: error.errorMessage, 
+			errortype: error.errorType, errordiscreption: error.detailedDescription } 
+			]]></ee:set-payload> </ee:message> </ee:transform> <logger level="INFO" doc:name="Logger" 
+			doc:id="b6432c97-b82c-45ca-9215-ca94bca779bf" message="#[payload]"/> </on-error-continue> 
+			</error-handler> -->
 	</flow>
 </mule>
