@@ -149,7 +149,7 @@ output application/java
 output application/json
 ---
 {
-	"Number": 1/0
+	"Number": 1/1
 }]]></ee:set-payload>
 				</ee:message>
 			</ee:transform>
@@ -214,8 +214,10 @@ payload.CASE_ID]]></ee:set-variable>
 		 <error-handler > <on-error-continue enableNotifications="true" logException="true" 
 			doc:name="On Error Continue" doc:id="35db3509-0182-4a21-993a-9ad8a346b7f3" 
 			type="ANY"> <ee:transform doc:name="Transform Message" doc:id="cb7218c6-ce87-439b-b43a-692ab375d09f" 
-			> <ee:message > <ee:set-payload ><![CDATA[%dw 2.0 output application/json 
-			-&#45;&#45; { message: "Error occurred in the main flow ", error: error.errorMessage, 
+			> <ee:message > <ee:set-payload ><![CDATA[%dw 2.0 
+output application/json 
+---
+			 { message: "Error occurred in the main flow ", error: error.errorMessage, 
 			errortype: error.errorType, errordiscreption: error.detailedDescription } 
 			]]></ee:set-payload> </ee:message> </ee:transform> <logger level="INFO" doc:name="Logger" 
 			doc:id="b6432c97-b82c-45ca-9215-ca94bca779bf" message="#[payload]"/> </on-error-continue> 
