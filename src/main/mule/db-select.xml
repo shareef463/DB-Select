@@ -149,7 +149,7 @@ output application/java
 output application/json
 ---
 {
-	"Number": 1/10
+	"Number": 100/100
 }]]></ee:set-payload>
 				</ee:message>
 			</ee:transform>
